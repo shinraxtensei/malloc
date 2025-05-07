@@ -1,2 +1,2 @@
-# mall-mok-oc
+# mall(mok)oc
 this is my implementation of malloc
