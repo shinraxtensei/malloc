@@ -5,7 +5,6 @@
 
 #include "../includes/malloc.h"
 
-// Fixed function name
 t_block *find_free_block(t_zone *zone, size_t size) {
   t_block *block = zone->blocks;
 
@@ -41,6 +40,7 @@ t_block *split_block(t_block *block, size_t size) {
 
 void coalesce_blocks(t_zone *zone, t_block *block) {
   t_block *next_block;
+  (void)zone;  // Suppress unused parameter warning
 
   if (!block->free) return;
 

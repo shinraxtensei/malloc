@@ -8,6 +8,12 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
+#ifdef __APPLE__
+#define GET_PAGE_SIZE() getpagesize()
+#else
+#define GET_PAGE_SIZE() sysconf(_SC_PAGESIZE)
+#endif
+
 #define MALLOC_DEBUG 1
 #define MALLOC_SCRIBBLE 2
 #define MALLOC_STATISTICS 3
@@ -15,17 +21,24 @@
 /*
 ** Memory zones constants - sizes are chosen to balance
 ** system calls vs memory waste
+** According to specification: zones must be multiples of page size
+** and contain at least 100 allocations
 */
-#define TINY_MAX 128    // Max size for TINY allocations
-#define SMALL_MAX 1024  // Max size for SMALL allocations
+#define TINY_MAX 128    // Max size for TINY allocations (1 to n bytes)
+#define SMALL_MAX 1024  // Max size for SMALL allocations (n+1 to m bytes)
 #define ALIGN_SIZE 16   // Alignment boundary
 
 /*
-** Zone sizes - each zone should hold at least 100 allocations
-** of the maximum size for its category plus metadata overhead
+** Zone sizes calculation - must be multiple of page size
+** and hold at least 100 allocations of max size plus metadata
 */
-#define TINY_ZONE_SIZE ((TINY_MAX + sizeof(t_block)) * 100)
-#define SMALL_ZONE_SIZE ((SMALL_MAX + sizeof(t_block)) * 100)
+#define MIN_ALLOCS_PER_ZONE 100
+#define TINY_ZONE_ALLOCS (MIN_ALLOCS_PER_ZONE)
+#define SMALL_ZONE_ALLOCS (MIN_ALLOCS_PER_ZONE)
+
+// These will be calculated at runtime based on page size
+extern size_t g_tiny_zone_size;
+extern size_t g_small_zone_size;
 
 /*
 ** Memory alignment macros
@@ -70,13 +83,15 @@ typedef struct s_memory {
 } t_memory;
 
 /*
- *
- ** Public function prototypes
- */
-void *malloc(size_t size);
+** Public function prototypes - matching exact specification
+*/
 void free(void *ptr);
+void *malloc(size_t size);
 void *realloc(void *ptr, size_t size);
-void *calloc(size_t nmemb, size_t size);
+
+/*
+** Additional mandatory functions
+*/
 void show_alloc_mem(void);
 t_zone *get_zone_list(t_zone_type type);
 /*
@@ -86,6 +101,7 @@ t_zone *get_zone_list(t_zone_type type);
 t_zone *create_zone(size_t size, t_zone_type type);
 void add_zone(t_zone *zone, t_zone_type type);
 t_zone_type get_zone_type(size_t size);
+t_zone *get_zone_list(t_zone_type type);
 t_block *find_free_block(t_zone *zone, size_t size);
 t_block *split_block(t_block *block, size_t size);
 void coalesce_blocks(t_zone *zone, t_block *block);
