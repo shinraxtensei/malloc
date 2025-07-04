@@ -1,5 +1,3 @@
-# Minimal Malloc Implementation Makefile for 42 Subject
-
 # Check HOSTTYPE environment variable as required by specification
 ifeq ($(HOSTTYPE),)
 HOSTTYPE := $(shell uname -m)_$(shell uname -s)

@@ -1,17 +1,6 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   malloc.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ahouari <ahouari@student.42.fr>    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/04 18:45:33 by ahouari       #+#    #+#             */
-/*   Updated: 2025/07/04 18:45:33 by ahouari      ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../includes/malloc.h"
 
+#include <_string.h>
 #include <pthread.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -58,6 +47,7 @@ static void calculate_zone_sizes(void) {
 static void init_memory_manager(void) {
   if (!g_initialized) {
     calculate_zone_sizes();
+    pthread_mutex_init(&g_memory.mutex, NULL);
     g_initialized = true;
   }
 }
@@ -120,9 +110,13 @@ void *malloc(size_t size) {
 
   if (size == 0) return NULL;
 
+  init_memory_manager();
+
   aligned_size = ALIGN(size);
 
+  pthread_mutex_lock(&g_memory.mutex);
   ptr = allocate_memory(aligned_size);
+  pthread_mutex_unlock(&g_memory.mutex);
   return ptr;
 }
 
@@ -151,12 +145,15 @@ void free(void *ptr) {
   if (ptr == NULL) return;
 
   init_memory_manager();
+  pthread_mutex_lock(&g_memory.mutex);
 
   if (is_valid_pointer(ptr, &block, &zone)) {
     block->free = true;
     coalesce_blocks(zone, block);
     cleanup_large_zone(zone);
   }
+
+  pthread_mutex_unlock(&g_memory.mutex);
 }
 
 /**
@@ -206,13 +203,18 @@ void *realloc(void *ptr, size_t size) {
   init_memory_manager();
   aligned_size = ALIGN(size);
 
+  pthread_mutex_lock(&g_memory.mutex);
+
   if (!is_valid_pointer(ptr, &block, &zone)) {
+    pthread_mutex_unlock(&g_memory.mutex);
     return NULL;
   }
 
   if (try_expand_in_place(block, zone, aligned_size)) {
+    pthread_mutex_unlock(&g_memory.mutex);
     return ptr;
   }
 
+  pthread_mutex_unlock(&g_memory.mutex);
   return realloc_with_copy(ptr, size, block);
 }
