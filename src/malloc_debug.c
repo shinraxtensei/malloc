@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "../../includes/malloc.h"
+#include "../includes/malloc.h"
 
 /**
  * Display blocks in a specific zone with exact specification format
