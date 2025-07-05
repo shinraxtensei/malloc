@@ -12,7 +12,7 @@ LDFLAGS = -shared
 SRC_DIR = src
 INCLUDE_DIR = includes
 
-# Source files - only mandatory ones
+# Source files -
 SRCS = $(SRC_DIR)/malloc.c \
        $(SRC_DIR)/malloc_core.c \
        $(SRC_DIR)/malloc_helpers.c \
@@ -28,7 +28,7 @@ SRCS = $(SRC_DIR)/malloc.c \
 # Object files
 OBJS = $(SRCS:.c=.o)
 
-# Library names as required by specification
+# Library names 
 LIB_NAME = libft_malloc_$(HOSTTYPE).so
 SYMLINK_NAME = libft_malloc.so
 
