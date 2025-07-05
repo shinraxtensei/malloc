@@ -6,7 +6,7 @@
 /*   By: anasshouari <anasshouari@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/05 00:00:00 by ashouari          #+#    #+#             */
-/*   Updated: 2025/07/05 15:25:00 by anasshouari      ###   ########.fr       */
+/*   Updated: 2025/07/05 18:59:11 by anasshouari      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,7 @@
 # define TINY_ZONE_ALLOCS 100
 # define SMALL_ZONE_ALLOCS 100
 
-extern size_t	g_tiny_zone_size;
-extern size_t	g_small_zone_size;
+
 
 typedef enum e_zone_type
 {
@@ -59,8 +58,13 @@ typedef struct s_memory
 	t_zone			*tiny;
 	t_zone			*small;
 	t_zone			*large;
-	pthread_mutex_t	mutex;
+	size_t			tiny_zone_size;
+	size_t			small_zone_size;
 }	t_memory;
+
+// External declarations for global variables (limited to 2 by subject)
+extern t_memory			g_memory;
+extern pthread_mutex_t	g_malloc_mutex;
 
 size_t	ft_strlen(const char *s);
 void	*ft_memset(void *s, int c, size_t n);

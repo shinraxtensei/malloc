@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   malloc_statistics.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasshouari <anasshouari@student.42.fr>    +#+  +:+       +#+        */
+/*   By: ahouari <ahouari@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/21 12:00:00 by ashouari          #+#    #+#             */
-/*   Updated: 2025/07/05 18:48:24 by anasshouari      ###   ########.fr       */
+/*   Created: 2025/01/21 12:00:00 by ahouari          #+#    #+#             */
+/*   Updated: 2025/07/05 18:59:11 by ahouari      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,11 +70,11 @@ void	show_alloc_mem_ex(void)
 	size_t	total;
 
 	// Thread-safe display of all memory zones
-	pthread_mutex_lock(&g_memory.mutex);
+	pthread_mutex_lock(&g_malloc_mutex);
 	show_zone_ex(g_memory.tiny, "TINY");
 	show_zone_ex(g_memory.small, "SMALL");
 	show_zone_ex(g_memory.large, "LARGE");
 	total = calculate_total_memory();
 	printf("Total allocated memory: %zu bytes\n", total);
-	pthread_mutex_unlock(&g_memory.mutex);
+	pthread_mutex_unlock(&g_malloc_mutex);
 }

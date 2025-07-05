@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   show_alloc_mem.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasshouari <anasshouari@student.42.fr>    +#+  +:+       +#+        */
+/*   By: ahouari <ahouari@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/04 18:45:24 by ashouari          #+#    #+#             */
-/*   Updated: 2025/07/05 18:48:32 by anasshouari      ###   ########.fr       */
+/*   Created: 2025/07/04 18:45:24 by ahouari          #+#    #+#             */
+/*   Updated: 2025/07/05 18:59:10 by ahouari      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	show_alloc_mem(void)
 	size_t	total;
 
 	// Thread-safe memory inspection
-	pthread_mutex_lock(&g_memory.mutex);
+	pthread_mutex_lock(&g_malloc_mutex);
 	
 	// Show all zone types
 	show_zone_blocks(g_memory.tiny, "TINY");
@@ -74,5 +74,5 @@ void	show_alloc_mem(void)
 	total = calculate_total_memory();
 	printf("Total : %zu bytes\n", total);
 	
-	pthread_mutex_unlock(&g_memory.mutex);
+	pthread_mutex_unlock(&g_malloc_mutex);
 }

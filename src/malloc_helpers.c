@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   malloc_helpers.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasshouari <anasshouari@student.42.fr>    +#+  +:+       +#+        */
+/*   By: ahouari <ahouari@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/05 00:00:00 by ashouari          #+#    #+#             */
-/*   Updated: 2025/07/05 18:48:29 by anasshouari      ###   ########.fr       */
+/*   Created: 2025/01/05 00:00:00 by ahouari          #+#    #+#             */
+/*   Updated: 2025/07/05 18:59:10 by ahouari      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,24 +97,24 @@ void	*realloc(void *ptr, size_t size)
 	
 	// Initialize system and prepare for reallocation
 	init_memory_manager();
-	pthread_mutex_lock(&g_memory.mutex);
+	pthread_mutex_lock(&g_malloc_mutex);
 	aligned_size = align_size(size);
 	
 	// Validate the pointer
 	if (!is_valid_pointer(ptr, &block, &zone))
 	{
-		pthread_mutex_unlock(&g_memory.mutex);
+		pthread_mutex_unlock(&g_malloc_mutex);
 		return (NULL);
 	}
 	
 	// Try to expand in place first (most efficient)
 	if (try_expand_in_place(block, zone, aligned_size))
 	{
-		pthread_mutex_unlock(&g_memory.mutex);
+		pthread_mutex_unlock(&g_malloc_mutex);
 		return (ptr);
 	}
 	
 	// Can't expand in place, unlock and use copy strategy
-	pthread_mutex_unlock(&g_memory.mutex);
+	pthread_mutex_unlock(&g_malloc_mutex);
 	return (realloc_with_copy(ptr, size, block));
 }

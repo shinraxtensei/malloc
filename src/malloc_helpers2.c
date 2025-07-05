@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   malloc_helpers2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasshouari <anasshouari@student.42.fr>    +#+  +:+       +#+        */
+/*   By: ahouari <ahouari@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/05 00:00:00 by anasshouari       #+#    #+#             */
-/*   Updated: 2025/07/05 18:48:30 by anasshouari      ###   ########.fr       */
+/*   Created: 2025/07/05 00:00:00 by ahouari          #+#    #+#             */
+/*   Updated: 2025/07/05 18:48:30 by ahouari      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

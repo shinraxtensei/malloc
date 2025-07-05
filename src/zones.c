@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   zones.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasshouari <anasshouari@student.42.fr>    +#+  +:+       +#+        */
+/*   By: ahouari <ahouari@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/05 00:00:00 by ashouari          #+#    #+#             */
-/*   Updated: 2025/07/05 18:48:28 by anasshouari      ###   ########.fr       */
+/*   Created: 2025/01/05 00:00:00 by ahouari          #+#    #+#             */
+/*   Updated: 2025/07/05 18:59:09 by ahouari      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ static size_t	get_zone_allocation_size(size_t size, t_zone_type type)
 	
 	// Use pre-calculated sizes for TINY and SMALL zones
 	if (type == TINY)
-		zone_size = g_tiny_zone_size;
+		zone_size = g_memory.tiny_zone_size;
 	else if (type == SMALL)
-		zone_size = g_small_zone_size;
+		zone_size = g_memory.small_zone_size;
 	else
 		// For LARGE zones, round up to page boundary
 		zone_size = ((size + sizeof(t_zone) + sizeof(t_block) + page_size - 1)
