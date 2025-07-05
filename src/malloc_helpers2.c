@@ -20,23 +20,18 @@ void	cleanup_large_zone(t_zone *zone)
 {
 	t_zone	*prev;
 
-	// Only clean up LARGE zones that are completely free
 	if (zone->type == LARGE && zone->blocks->free && zone->blocks->next == NULL)
 	{
-		// Remove from linked list
 		if (g_memory.large == zone)
 			g_memory.large = zone->next;
 		else
 		{
-			// Find previous zone to update its next pointer
 			prev = g_memory.large;
 			while (prev && prev->next != zone)
 				prev = prev->next;
 			if (prev)
 				prev->next = zone->next;
 		}
-		
-		// Return memory to the operating system
 		munmap(zone, zone->size);
 	}
 }

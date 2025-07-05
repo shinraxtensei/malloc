@@ -31,7 +31,6 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 	unsigned char		*d;
 	const unsigned char	*s;
 
-	// Handle NULL pointers
 	if (!dest && !src)
 		return (NULL);
 	d = (unsigned char *)dest;

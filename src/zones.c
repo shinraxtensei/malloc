@@ -21,14 +21,11 @@ static size_t	get_zone_allocation_size(size_t size, t_zone_type type)
 	size_t	page_size;
 
 	page_size = get_page_size();
-	
-	// Use pre-calculated sizes for TINY and SMALL zones
 	if (type == TINY)
 		zone_size = g_memory.tiny_zone_size;
 	else if (type == SMALL)
 		zone_size = g_memory.small_zone_size;
 	else
-		// For LARGE zones, round up to page boundary
 		zone_size = ((size + sizeof(t_zone) + sizeof(t_block) + page_size - 1)
 				/ page_size)
 			* page_size;
@@ -36,34 +33,37 @@ static size_t	get_zone_allocation_size(size_t size, t_zone_type type)
 }
 
 // Create a new memory zone using mmap
-t_zone	*create_zone(size_t size, t_zone_type type)
+static void	init_zone_metadata(t_zone *zone, size_t zone_size, t_zone_type type)
 {
-	t_zone	*zone;
-	t_block	*block;
-	size_t	zone_size;
-
-	// Get the total size needed for this zone
-	zone_size = get_zone_allocation_size(size, type);
-	
-	// Allocate memory from the OS
-	zone = (t_zone *)mmap(NULL, zone_size, PROT_READ | PROT_WRITE,
-			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-	if (zone == MAP_FAILED)
-		return (NULL);
-	
-	// Initialize zone metadata
 	zone->size = zone_size;
 	zone->type = type;
 	zone->next = NULL;
-	
-	// Create the first block (uses entire zone minus zone metadata)
+}
+
+static void	init_first_block(t_zone *zone, size_t zone_size)
+{
+	t_block	*block;
+
 	block = (t_block *)((char *)zone + sizeof(t_zone));
 	block->size = zone_size - sizeof(t_zone) - sizeof(t_block);
 	block->free = true;
 	block->next = NULL;
 	block->prev = NULL;
 	zone->blocks = block;
-	
+}
+
+t_zone	*create_zone(size_t size, t_zone_type type)
+{
+	t_zone	*zone;
+	size_t	zone_size;
+
+	zone_size = get_zone_allocation_size(size, type);
+	zone = (t_zone *)mmap(NULL, zone_size, PROT_READ | PROT_WRITE,
+			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+	if (zone == MAP_FAILED)
+		return (NULL);
+	init_zone_metadata(zone, zone_size, type);
+	init_first_block(zone, zone_size);
 	return (zone);
 }
 
@@ -72,15 +72,12 @@ void	add_zone(t_zone *zone, t_zone_type type)
 {
 	t_zone	**zone_list;
 
-	// Get pointer to the appropriate zone list
 	if (type == TINY)
 		zone_list = &g_memory.tiny;
 	else if (type == SMALL)
 		zone_list = &g_memory.small;
 	else
 		zone_list = &g_memory.large;
-	
-	// Add to front of list (most recent first)
 	zone->next = *zone_list;
 	*zone_list = zone;
 }

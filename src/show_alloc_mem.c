@@ -20,10 +20,8 @@ static void	print_block_info(t_block *block)
 	void	*start;
 	void	*end;
 
-	// Only print allocated blocks
 	if (!block->free)
 	{
-		// Calculate user data range
 		start = (void *)((char *)block + sizeof(t_block));
 		end = (void *)((char *)start + block->size - 1);
 		printf("%p - %p : %zu bytes\n", start, end, block->size);
@@ -39,14 +37,11 @@ static void	show_zone_blocks(t_zone *zone, const char *zone_name)
 	first_zone = true;
 	while (zone)
 	{
-		// Print zone header only for first zone of this type
 		if (first_zone)
 		{
 			printf("%s : %p\n", zone_name, (void *)zone);
 			first_zone = false;
 		}
-		
-		// Print all allocated blocks in this zone
 		block = zone->blocks;
 		while (block)
 		{
@@ -62,17 +57,11 @@ void	show_alloc_mem(void)
 {
 	size_t	total;
 
-	// Thread-safe memory inspection
 	pthread_mutex_lock(&g_malloc_mutex);
-	
-	// Show all zone types
 	show_zone_blocks(g_memory.tiny, "TINY");
 	show_zone_blocks(g_memory.small, "SMALL");
 	show_zone_blocks(g_memory.large, "LARGE");
-	
-	// Calculate and display total
 	total = calculate_total_memory();
 	printf("Total : %zu bytes\n", total);
-	
 	pthread_mutex_unlock(&g_malloc_mutex);
 }

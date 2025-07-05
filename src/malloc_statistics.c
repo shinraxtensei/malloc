@@ -22,7 +22,6 @@ static void	show_zone_ex(t_zone *zone, const char *type_name)
 	printf("%s zones:\n", type_name);
 	while (zone)
 	{
-		// Print detailed zone information
 		print_zone_blocks(zone);
 		zone = zone->next;
 	}
@@ -37,11 +36,9 @@ static size_t	count_zone_memory(t_zone *zone)
 	total = 0;
 	while (zone)
 	{
-		// Check all blocks in this zone
 		block = zone->blocks;
 		while (block)
 		{
-			// Only count allocated blocks
 			if (!block->free)
 				total += block->size;
 			block = block->next;
@@ -57,7 +54,6 @@ size_t	calculate_total_memory(void)
 	size_t	total;
 
 	total = 0;
-	// Sum memory from all zone types
 	total += count_zone_memory(g_memory.tiny);
 	total += count_zone_memory(g_memory.small);
 	total += count_zone_memory(g_memory.large);
@@ -69,7 +65,6 @@ void	show_alloc_mem_ex(void)
 {
 	size_t	total;
 
-	// Thread-safe display of all memory zones
 	pthread_mutex_lock(&g_malloc_mutex);
 	show_zone_ex(g_memory.tiny, "TINY");
 	show_zone_ex(g_memory.small, "SMALL");

@@ -27,10 +27,7 @@ static bool	find_block_in_zone(void *ptr, t_zone *zone, t_block **block_ptr)
 	block = zone->blocks;
 	while (block)
 	{
-		// Calculate where user data starts (after block metadata)
 		block_data = (void *)((char *)block + sizeof(t_block));
-		
-		// Check for exact match
 		if (ptr == block_data)
 		{
 			*block_ptr = block;
@@ -47,20 +44,14 @@ bool	is_valid_pointer(void *ptr, t_block **block_ptr, t_zone **zone_ptr)
 	t_zone		*zone;
 	t_zone_type	type;
 
-	// Search through all zone types
 	type = TINY;
 	while (type <= LARGE)
 	{
-		// Get the first zone of this type
 		zone = get_zone_list(type);
-		
-		// Check all zones of this type
 		while (zone)
 		{
-			// First check if pointer is in zone's memory range
 			if (is_pointer_in_zone(ptr, zone))
 			{
-				// Then check if it exactly matches a block's data start
 				if (find_block_in_zone(ptr, zone, block_ptr))
 				{
 					*zone_ptr = zone;
