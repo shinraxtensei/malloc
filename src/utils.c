@@ -3,55 +3,62 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahouari <ahouari@student.42.fr>    +#+  +:+       +#+        */
+/*   By: anasshouari <anasshouari@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/04 18:45:15 by ahouari       #+#    #+#             */
-/*   Updated: 2025/07/04 18:45:15 by ahouari      ###   ########.fr       */
+/*   Created: 2025/01/05 00:00:00 by ashouari          #+#    #+#             */
+/*   Updated: 2025/07/05 15:24:59 by anasshouari      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <string.h>
-
 #include "../includes/malloc.h"
 
-/**
- * Custom memset implementation for internal use
- */
-void *ft_memset(void *s, int c, size_t n) {
-  unsigned char *ptr = (unsigned char *)s;
-  unsigned char value = (unsigned char)c;
+void	*ft_memset(void *s, int c, size_t n)
+{
+	unsigned char	*ptr;
+	unsigned char	value;
 
-  while (n--) {
-    *ptr++ = value;
-  }
-  return s;
+	ptr = (unsigned char *)s;
+	value = (unsigned char)c;
+	while (n--)
+		*ptr++ = value;
+	return (s);
 }
 
-/**
- * Custom memcpy implementation for internal use
- */
-void *ft_memcpy(void *dest, const void *src, size_t n) {
-  unsigned char *d = (unsigned char *)dest;
-  const unsigned char *s = (const unsigned char *)src;
+void	*ft_memcpy(void *dest, const void *src, size_t n)
+{
+	unsigned char		*d;
+	const unsigned char	*s;
 
-  if (dest == src || n == 0) {
-    return dest;
-  }
-
-  while (n--) {
-    *d++ = *s++;
-  }
-  return dest;
+	if (!dest && !src)
+		return (NULL);
+	d = (unsigned char *)dest;
+	s = (const unsigned char *)src;
+	while (n--)
+		*d++ = *s++;
+	return (dest);
 }
 
-/**
- * Get zone list by type (centralized function)
- */
-t_zone *get_zone_list(t_zone_type type) {
-  if (type == TINY)
-    return g_memory.tiny;
-  else if (type == SMALL)
-    return g_memory.small;
-  else
-    return g_memory.large;
+size_t	ft_strlen(const char *s)
+{
+	size_t	len;
+
+	len = 0;
+	while (s[len])
+		len++;
+	return (len);
+}
+
+t_zone_type	get_zone_type(size_t size)
+{
+	if (size <= TINY_MAX)
+		return (TINY);
+	else if (size <= SMALL_MAX)
+		return (SMALL);
+	else
+		return (LARGE);
+}
+
+size_t	align_size(size_t size)
+{
+	return (((size) + ALIGN_SIZE - 1) & ~(ALIGN_SIZE - 1));
 }

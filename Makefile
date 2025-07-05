@@ -14,6 +14,11 @@ INCLUDE_DIR = includes
 
 # Source files - only mandatory ones
 SRCS = $(SRC_DIR)/malloc.c \
+       $(SRC_DIR)/malloc_core.c \
+       $(SRC_DIR)/malloc_helpers.c \
+       $(SRC_DIR)/malloc_helpers2.c \
+       $(SRC_DIR)/malloc_statistics.c \
+       $(SRC_DIR)/malloc_utils.c \
        $(SRC_DIR)/zones.c \
        $(SRC_DIR)/blocks.c \
        $(SRC_DIR)/validation.c \

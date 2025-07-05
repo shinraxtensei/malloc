@@ -3,54 +3,61 @@
 /*                                                        :::      ::::::::   */
 /*   validation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahouari <ahouari@student.42.fr>    +#+  +:+       +#+        */
+/*   By: anasshouari <anasshouari@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/04 18:44:43 by ahouari       #+#    #+#             */
-/*   Updated: 2025/07/04 18:44:43 by ahouari      ###   ########.fr       */
+/*   Created: 2025/01/05 00:00:00 by ashouari          #+#    #+#             */
+/*   Updated: 2025/07/05 15:25:01 by anasshouari      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/malloc.h"
 
-/**
- * Check if pointer is within zone bounds
- */
-static bool is_pointer_in_zone(void *ptr, t_zone *zone) {
-  return (ptr > (void *)zone && ptr < (void *)((char *)zone + zone->size));
+static bool	is_pointer_in_zone(void *ptr, t_zone *zone)
+{
+	return (ptr > (void *)zone && ptr < (void *)((char *)zone + zone->size));
 }
 
-/**
- * Find block matching the given pointer in a zone
- */
-static bool find_block_in_zone(void *ptr, t_zone *zone, t_block **block_ptr) {
-  t_block *block = zone->blocks;
+static bool	find_block_in_zone(void *ptr, t_zone *zone, t_block **block_ptr)
+{
+	t_block	*block;
+	void	*block_data;
 
-  while (block) {
-    void *block_data = (void *)((char *)block + sizeof(t_block));
-    if (ptr == block_data) {
-      *block_ptr = block;
-      return true;
-    }
-    block = block->next;
-  }
-  return false;
+	block = zone->blocks;
+	while (block)
+	{
+		block_data = (void *)((char *)block + sizeof(t_block));
+		if (ptr == block_data)
+		{
+			*block_ptr = block;
+			return (true);
+		}
+		block = block->next;
+	}
+	return (false);
 }
 
-bool is_valid_pointer(void *ptr, t_block **block_ptr, t_zone **zone_ptr) {
-  t_zone *zone;
-  t_zone_type type;
+bool	is_valid_pointer(void *ptr, t_block **block_ptr, t_zone **zone_ptr)
+{
+	t_zone		*zone;
+	t_zone_type	type;
 
-  for (type = TINY; type <= LARGE; type++) {
-    zone = get_zone_list(type);
-    while (zone) {
-      if (is_pointer_in_zone(ptr, zone)) {
-        if (find_block_in_zone(ptr, zone, block_ptr)) {
-          *zone_ptr = zone;
-          return true;
-        }
-      }
-      zone = zone->next;
-    }
-  }
-  return false;
+	type = TINY;
+	while (type <= LARGE)
+	{
+		zone = get_zone_list(type);
+		while (zone)
+		{
+			if (is_pointer_in_zone(ptr, zone))
+			{
+				if (find_block_in_zone(ptr, zone, block_ptr))
+				{
+					*zone_ptr = zone;
+					return (true);
+				}
+			}
+			zone = zone->next;
+		}
+		type++;
+	}
+	return (false);
 }
