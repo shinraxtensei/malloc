@@ -25,11 +25,13 @@ run_test() {
     echo -e "${BLUE}--- Test $test_name ---${NC}"
     echo "Compiling $test_file..."
     
-    # Add malloc declaration for test1 if needed
+    # Add malloc declaration for test1 if needed and link test4 with malloc library
     if [ "$test_file" = "tests/test1.c" ]; then
         sed '1i\
 #include <stdlib.h>' tests/test1.c > /tmp/test1_fixed.c
         gcc -o test$test_name /tmp/test1_fixed.c
+    elif [ "$test_file" = "tests/test4.c" ]; then
+        gcc -o test$test_name $test_file -L. -lft_malloc
     else
         gcc -o test$test_name $test_file
     fi
@@ -39,7 +41,7 @@ run_test() {
         echo "Running with our malloc library..."
         echo "Command: DYLD_LIBRARY_PATH=. DYLD_INSERT_LIBRARIES=\"./libft_malloc.so\" DYLD_FORCE_FLAT_NAMESPACE=1 ./test$test_name"
         echo "Output:"
-        timeout 10s /usr/bin/time -l ./test$test_name 2>&1
+        /usr/bin/time -l ./test$test_name 2>&1
         echo -e "${GREEN}Test $test_name completed${NC}"
     else
         echo -e "${RED}Compilation failed for test $test_name${NC}"
