@@ -57,4 +57,4 @@ run_test "4" "tests/test4.c"
 echo -e "${BLUE}=== All Tests Completed ===${NC}"
 
 # Cleanup
-rm -f test0 test1 test2 test3 test4 /tmp/test1_fixed.c
+rm -f test0 test1 test2 test3 test4 

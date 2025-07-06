@@ -5,7 +5,7 @@ endif
 
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -std=c99 -fPIC
+CFLAGS = -Wall -Wextra -Werror -fPIC
 LDFLAGS = -shared
 
 # Directories
