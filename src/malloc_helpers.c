@@ -49,7 +49,7 @@ static void	*realloc_with_copy(void *ptr, size_t size, t_block *block)
 		copy_size = block->size;
 	else
 		copy_size = size;
-	memcpy(new_ptr, ptr, copy_size);
+	ft_memcpy(new_ptr, ptr, copy_size);
 	free(ptr);
 	return (new_ptr);
 }
